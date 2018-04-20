@@ -6,19 +6,7 @@ spring:
     url: jdbc:hsqldb:mem:twitter
     driver-class-name: org.hsqldb.jdbcDriver
     username: sa
-    password: 
+    password: null
   jpa:
     hibernate:
       ddl-auto: create-drop
-    
-com.vinicius.twitter:
-  applicationName: Twitter
-  info:
-    projectName: @parent.name@
-    version: @project.version@
-    timestamp: @creation.time.timestamp@
-
-management:
-  security:
-    enabled: false
-  context-path: /actuator

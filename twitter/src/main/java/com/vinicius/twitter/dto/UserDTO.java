@@ -2,6 +2,7 @@ package com.vinicius.twitter.dto;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 import com.vinicius.twitter.dto.validations.PostValidationGroup;
@@ -14,6 +15,8 @@ public class UserDTO implements Serializable
 
     @NotNull(message = "Email can not be null.", groups = { PostValidationGroup.class,
             UserRegistrerValidationGroup.class, StartFollowingValidationGroup.class })
+    @Email(message = "Email not right, should be in this example: name@server.com", groups = {
+            PostValidationGroup.class, UserRegistrerValidationGroup.class, StartFollowingValidationGroup.class })
     private String eMail;
 
     @NotNull(message = "Name can not be null.", groups = UserRegistrerValidationGroup.class)

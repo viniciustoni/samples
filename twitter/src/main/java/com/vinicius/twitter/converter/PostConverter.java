@@ -30,6 +30,7 @@ public class PostConverter implements Converter<Post, PostDTO>
 
         post.setPostMessage(from.getPostMessage());
         post.setUser(userConverter.to(from.getUser()));
+        post.setUserEmail(from.getUser().getEMail());
 
         return post;
     }

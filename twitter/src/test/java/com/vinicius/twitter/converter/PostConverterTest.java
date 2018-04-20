@@ -61,6 +61,7 @@ public class PostConverterTest extends BaseTest
         // then
         assertEquals(post.getUser(), user);
         assertEquals(post.getPostMessage(), postDTO.getPostMessage());
+        assertEquals(post.getUserEmail(), postDTO.getUser().getEMail());
     }
 
     @Test
@@ -97,7 +98,9 @@ public class PostConverterTest extends BaseTest
         // then
         assertEquals(post.get(0).getUser(), user);
         assertEquals(post.get(0).getPostMessage(), postDTO.get(0).getPostMessage());
+        assertEquals(post.get(0).getUserEmail(), postDTO.get(0).getUser().getEMail());
         assertEquals(post.get(1).getUser(), user);
         assertEquals(post.get(1).getPostMessage(), postDTO.get(1).getPostMessage());
+        assertEquals(post.get(1).getUserEmail(), postDTO.get(1).getUser().getEMail());
     }
 }

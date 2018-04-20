@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 @Entity
 @Table(name = "POST")
 public class Post
@@ -19,14 +21,18 @@ public class Post
     @GeneratedValue
     private Long id;
 
+    @Column(name = "USER_EMAIL")
+    private String userEmail;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(referencedColumnName = "EMAIL", name = "USER", updatable = false, insertable = false)
+    @JoinColumn(referencedColumnName = "EMAIL", name = "USER_EMAIL", updatable = false, insertable = false)
     private User user;
 
     @Column(name = "POST_MESSAGE", length = 140, nullable = false)
     private String postMessage;
 
     @Column(name = "TIMESTAMP")
+    @CreationTimestamp
     private Date timestamp;
 
     public Post()
@@ -47,6 +53,16 @@ public class Post
     public void setId(Long id)
     {
         this.id = id;
+    }
+
+    public String getUserEmail()
+    {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail)
+    {
+        this.userEmail = userEmail;
     }
 
     public User getUser()

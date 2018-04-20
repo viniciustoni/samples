@@ -3,7 +3,6 @@ package com.vinicius.twitter.service;
 import java.util.List;
 
 import com.vinicius.twitter.dto.PostDTO;
-import com.vinicius.twitter.dto.UserDTO;
 import com.vinicius.twitter.exceptions.UserNotFoundException;
 
 public interface PostService
@@ -23,15 +22,16 @@ public interface PostService
      * Post in timeline
      * 
      * @param postDTO
+     * @throws UserNotFoundException
      */
-    void post(PostDTO postDTO);
+    void post(PostDTO postDTO) throws UserNotFoundException;
 
     /**
      * Get posts from user passed by parameter.
      * 
-     * @param userDTO
+     * @param userEmail
      * @return List of posted by user
      * @throws UserNotFoundException
      */
-    List<PostDTO> postByUser(UserDTO userDTO) throws UserNotFoundException;
+    List<PostDTO> postByUser(String userEmail) throws UserNotFoundException;
 }

@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.google.common.base.Predicates;
-import com.vinicius.twitter.config.properties.MyApplicationProperties;
 
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -27,7 +26,7 @@ public class SwaggerConfig
 {
 
 	@Bean
-	public Docket api(MyApplicationProperties myApplicationProperties)
+	public Docket api()
 	{
 
 		return new Docket(DocumentationType.SWAGGER_2)

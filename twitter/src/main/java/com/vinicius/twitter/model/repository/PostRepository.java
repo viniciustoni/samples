@@ -9,5 +9,5 @@ import com.vinicius.twitter.model.entity.User;
 
 public interface PostRepository extends CrudRepository<Post, Long>
 {
-    List<Post> findByUserInOrderByTimestamp(List<User> users);
+    List<Post> findByUserInOrderByTimestampDesc(List<User> users);
 }
