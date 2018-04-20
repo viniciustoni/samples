@@ -46,37 +46,38 @@ public class UserServiceImpl implements UserService
     {
         Following following = followingConverter.to(followingDTO);
 
-        verifyUserExist(following.getUser());
-        verifyUserExist(following.getUserFollowing());
+        verifyUserExist(following.getUser().getEMail());
+        verifyUserExist(following.getUserFollowing().getEMail());
         verifyReleationShipExists(following);
 
         followingRepository.save(following);
     }
 
     @Override
-    public List<UserDTO> following(final UserDTO userDTO)
+    public List<UserDTO> following(final String userEmail) throws UserNotFoundException
     {
-        User user = userConverter.to(userDTO);
-        List<User> followings = followingRepository.findUserFollowingByUser(user);
+        verifyUserExist(userEmail);
+        List<User> followings = followingRepository.findUserFollowingByFollowingIdUserEmail(userEmail);
 
         return userConverter.fromList(followings);
     }
 
     @Override
-    public List<UserDTO> followers(final UserDTO userDTO)
+    public List<UserDTO> followers(final String userFollowingEmail) throws UserNotFoundException
     {
-        User user = userConverter.to(userDTO);
-        List<User> followers = followingRepository.findUserByUserFollowing(user);
+        verifyUserExist(userFollowingEmail);
+        List<User> followers = followingRepository.findUserByFollowingIdUserEmailFollowing(userFollowingEmail);
 
         return userConverter.fromList(followers);
     }
 
-    private void verifyUserExist(final User user) throws UserNotFoundException
+    @Override
+    public void verifyUserExist(final String userEmail) throws UserNotFoundException
     {
-        Optional<User> userOptional = userRepository.findById(user.getEMail());
+        Optional<User> userOptional = userRepository.findById(userEmail);
         if (!userOptional.isPresent())
         {
-            throw new UserNotFoundException(user);
+            throw new UserNotFoundException(userEmail);
         }
     }
 

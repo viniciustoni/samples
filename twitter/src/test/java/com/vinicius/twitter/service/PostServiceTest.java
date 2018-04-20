@@ -18,6 +18,7 @@ import com.vinicius.twitter.converter.PostConverter;
 import com.vinicius.twitter.converter.UserConverter;
 import com.vinicius.twitter.dto.PostDTO;
 import com.vinicius.twitter.dto.UserDTO;
+import com.vinicius.twitter.exceptions.UserNotFoundException;
 import com.vinicius.twitter.fixture.dto.PostDTOFixture;
 import com.vinicius.twitter.fixture.dto.UserDTOFixture;
 import com.vinicius.twitter.fixture.entity.PostFixture;
@@ -45,7 +46,7 @@ public class PostServiceTest extends BaseTest
     private PostService postService = new PostServiceImpl();
 
     @Test
-    public void shouldCreateTimeLineForUser()
+    public void shouldCreateTimeLineForUser() throws UserNotFoundException
     {
         // given
         UserDTO userDTO = from(UserDTO.class).gimme(UserDTOFixture.Template.VALID.name());
@@ -54,18 +55,18 @@ public class PostServiceTest extends BaseTest
         List<Post> posts = from(Post.class).gimme(2, PostFixture.Template.VALID.name());
         List<PostDTO> postsDTO = from(PostDTO.class).gimme(2, PostDTOFixture.Template.VALID.name());
 
-        given(userService.following(userDTO)).willReturn(following);
+        given(userService.following(userDTO.getEMail())).willReturn(following);
         given(userConverter.toList(following)).willReturn(usersFollowing);
         given(postRepository.findByUserInOrderByTimestamp(usersFollowing)).willReturn(posts);
         given(postConverter.fromList(posts)).willReturn(postsDTO);
 
         // when
-        List<PostDTO> timeline = postService.createTimelineForUser(userDTO);
+        List<PostDTO> timeline = postService.createTimelineForUser(userDTO.getEMail());
 
         // then
         assertEquals(postsDTO, timeline);
 
-        verify(userService).following(userDTO);
+        verify(userService).following(userDTO.getEMail());
         verify(userConverter).toList(following);
         verify(postRepository).findByUserInOrderByTimestamp(usersFollowing);
         verify(postConverter).fromList(posts);
@@ -91,7 +92,7 @@ public class PostServiceTest extends BaseTest
     }
     
     @Test
-    public void shouldGetAllPostFromUser()
+    public void shouldGetAllPostFromUser() throws UserNotFoundException
     {
         // given
         UserDTO userDTO = from(UserDTO.class).gimme(UserDTOFixture.Template.VALID.name());

@@ -156,52 +156,128 @@ public class UserServiceTest extends BaseTest
     }
 
     @Test
-    public void shouldReturnFollowingWhenReceivedAnUser()
+    public void shouldReturnFollowingWhenReceivedAnUser() throws UserNotFoundException
     {
         // given
         final UserDTO userDTO = from(UserDTO.class).gimme(UserDTOFixture.Template.VALID.name());
-        final User user = from(User.class).gimme(UserFixture.Template.VALID.name());
         final List<User> users = from(User.class).gimme(2, UserFixture.Template.VALID.name());
         final List<UserDTO> usersDTO = from(UserDTO.class).gimme(2, UserDTOFixture.Template.VALID.name());
+        final Optional<User> user = Optional.of(users.get(0));
 
-        given(userConverter.to(userDTO)).willReturn(user);
-        given(followingRepository.findUserFollowingByUser(user)).willReturn(users);
+        given(userRepository.findById(userDTO.getEMail())).willReturn(user);
+        given(followingRepository.findUserFollowingByFollowingIdUserEmail(userDTO.getEMail())).willReturn(users);
         given(userConverter.fromList(users)).willReturn(usersDTO);
 
         // when
-        final List<UserDTO> usersDTOReturn = userService.following(userDTO);
+        final List<UserDTO> usersDTOReturn = userService.following(userDTO.getEMail());
 
         // then
         assertEquals(usersDTO, usersDTOReturn);
 
-        verify(userConverter).to(userDTO);
-        verify(followingRepository).findUserFollowingByUser(user);
+        verify(userRepository).findById(userDTO.getEMail());
+        verify(followingRepository).findUserFollowingByFollowingIdUserEmail(userDTO.getEMail());
         verify(userConverter).fromList(users);
         verifyNoMoreInteractions(userRepository, followingRepository, userConverter, followingConverter);
     }
 
     @Test
-    public void shouldReturnFollowersWhenReceivedAnUser()
+    public void shouldThrownAnExceptionTyingToGetFollowingUsersWhenReceivedAnUserInexist() throws UserNotFoundException
     {
         // given
         final UserDTO userDTO = from(UserDTO.class).gimme(UserDTOFixture.Template.VALID.name());
-        final User user = from(User.class).gimme(UserFixture.Template.VALID.name());
+        final Optional<User> user = Optional.empty();
+
+        given(userRepository.findById(userDTO.getEMail())).willReturn(user);
+
+        // when
+        try
+        {
+            userService.following(userDTO.getEMail());
+        } catch (UserNotFoundException e)
+        {
+        } catch (Exception e)
+        {
+            fail();
+        }
+
+        // then
+        verify(userRepository).findById(userDTO.getEMail());
+        verifyNoMoreInteractions(userRepository, followingRepository, userConverter, followingConverter);
+    }
+
+    @Test
+    public void shouldReturnFollowersWhenReceivedAnUser() throws UserNotFoundException
+    {
+        // given
+        final UserDTO userDTO = from(UserDTO.class).gimme(UserDTOFixture.Template.VALID.name());
         final List<User> users = from(User.class).gimme(2, UserFixture.Template.VALID.name());
         final List<UserDTO> usersDTO = from(UserDTO.class).gimme(2, UserDTOFixture.Template.VALID.name());
+        final Optional<User> user = Optional.of(users.get(0));
 
-        given(userConverter.to(userDTO)).willReturn(user);
-        given(followingRepository.findUserByUserFollowing(user)).willReturn(users);
+        given(userRepository.findById(userDTO.getEMail())).willReturn(user);
+        given(followingRepository.findUserByFollowingIdUserEmailFollowing(userDTO.getEMail())).willReturn(users);
         given(userConverter.fromList(users)).willReturn(usersDTO);
 
         // when
-        final List<UserDTO> usersDTOReturn = userService.followers(userDTO);
+        final List<UserDTO> usersDTOReturn = userService.followers(userDTO.getEMail());
 
         // then
         assertEquals(usersDTO, usersDTOReturn);
 
-        verify(userConverter).to(userDTO);
-        verify(followingRepository).findUserByUserFollowing(user);
+        verify(followingRepository).findUserByFollowingIdUserEmailFollowing(userDTO.getEMail());
+        verify(userRepository).findById(userDTO.getEMail());
         verify(userConverter).fromList(users);
         verifyNoMoreInteractions(userRepository, followingRepository, userConverter, followingConverter);
+    }
+
+    @Test
+    public void shouldThrownAnExceptionTyingToGetFollowersUsersWhenReceivedAnUserInexist() throws UserNotFoundException
+    {
+        // given
+        final UserDTO userDTO = from(UserDTO.class).gimme(UserDTOFixture.Template.VALID.name());
+        final Optional<User> user = Optional.empty();
+
+        given(userRepository.findById(userDTO.getEMail())).willReturn(user);
+
+        // when
+        try
+        {
+            userService.followers(userDTO.getEMail());
+        } catch (UserNotFoundException e)
+        {
+        } catch (Exception e)
+        {
+            fail();
+        }
+
+        // then
+        verify(userRepository).findById(userDTO.getEMail());
+        verifyNoMoreInteractions(userRepository, followingRepository, userConverter, followingConverter);
+    }
+
+    @Test
+    public void shouldDoNothingWhenUserExists() throws UserNotFoundException
+    {
+        // given
+        final Optional<User> user = Optional.of(from(User.class).gimme(UserFixture.Template.VALID.name()));
+
+        given(userRepository.findById(user.get().getEMail())).willReturn(user);
+        // when
+        userService.verifyUserExist(user.get().getEMail());
+
+        // then
+        verify(userRepository).findById(user.get().getEMail());
+    }
+    
+    @Test(expected = UserNotFoundException.class)
+    public void shouldThrowAnExceptionWhenUserNotExists() throws UserNotFoundException
+    {
+        // given
+        final UserDTO userDTO = from(UserDTO.class).gimme(UserDTOFixture.Template.VALID.name());
+        final Optional<User> user = Optional.empty();
+
+        given(userRepository.findById(userDTO.getEMail())).willReturn(user);
+        // when
+        userService.verifyUserExist(userDTO.getEMail());
     }
 }

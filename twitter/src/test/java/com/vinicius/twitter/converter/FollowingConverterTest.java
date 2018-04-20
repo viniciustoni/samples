@@ -59,6 +59,8 @@ public class FollowingConverterTest extends BaseTest
         final Following following = followingConverter.to(followingDTO);
 
         // then
+        assertEquals(following.getFollowingId().getUserEmail(), user.getEMail());
+        assertEquals(following.getFollowingId().getUserEmailFollowing(), user.getEMail());
         assertEquals(following.getUser(), user);
         assertEquals(following.getUserFollowing(), user);
     }
@@ -98,7 +100,11 @@ public class FollowingConverterTest extends BaseTest
         // then
         assertEquals(following.get(0).getUser(), user);
         assertEquals(following.get(0).getUserFollowing(), user);
+        assertEquals(following.get(0).getFollowingId().getUserEmail(), user.getEMail());
+        assertEquals(following.get(0).getFollowingId().getUserEmailFollowing(), user.getEMail());
         assertEquals(following.get(1).getUser(), user);
         assertEquals(following.get(1).getUserFollowing(), user);
+        assertEquals(following.get(1).getFollowingId().getUserEmail(), user.getEMail());
+        assertEquals(following.get(1).getFollowingId().getUserEmailFollowing(), user.getEMail());
     }
 }

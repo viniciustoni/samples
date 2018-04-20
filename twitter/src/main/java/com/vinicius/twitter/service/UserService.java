@@ -28,18 +28,30 @@ public interface UserService
     void follow(FollowingDTO followingDTO) throws UserNotFoundException, RelationshipAlreadyExistException;
 
     /**
-     * Get all users that he the {@link UserDTO} is following
+     * Get all users that he the user is following
      * 
-     * @param userDTO
+     * @param userEmail
      * @return List of following
+     * @throws RelationshipAlreadyExistException
+     *             in case of relationship already exists
      */
-    List<UserDTO> following(UserDTO userDTO);
+    List<UserDTO> following(String userEmail) throws UserNotFoundException;
 
     /**
      * Get All users that is her/him followers
      * 
-     * @param userDTO
+     * @param userEmail
      * @return list of follwers
+     * @throws RelationshipAlreadyExistException
+     *             in case of relationship already exists
      */
-    List<UserDTO> followers(UserDTO userDTO);
+    List<UserDTO> followers(String userEmail) throws UserNotFoundException;
+
+    /**
+     * Verify if user exist in database.
+     * 
+     * @param userEmail
+     * @throws UserNotFoundException
+     */
+    void verifyUserExist(String userEmail) throws UserNotFoundException;
 }

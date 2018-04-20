@@ -14,7 +14,7 @@ import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/feed")
-public class FeedApi
+public class FeedRest
 {
     @Autowired
     private MyApplicationProperties myApplicationProperties;
@@ -27,5 +27,4 @@ public class FeedApi
         final FeedResponseDTO infoDTO = new FeedResponseDTO(myApplicationProperties.getApplicationName());
         return ResponseEntity.ok(infoDTO);
     }
-
 }

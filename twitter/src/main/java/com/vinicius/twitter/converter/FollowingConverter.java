@@ -26,11 +26,6 @@ public class FollowingConverter implements Converter<Following, FollowingDTO>
     @Override
     public Following to(FollowingDTO from)
     {
-        final Following following = new Following();
-
-        following.setUser(userConverter.to(from.getUser()));
-        following.setUserFollowing(userConverter.to(from.getUserFollowing()));
-
-        return following;
+        return new Following(userConverter.to(from.getUser()), userConverter.to(from.getUserFollowing()))   ;
     }
 }

@@ -9,6 +9,7 @@ import com.vinicius.twitter.converter.PostConverter;
 import com.vinicius.twitter.converter.UserConverter;
 import com.vinicius.twitter.dto.PostDTO;
 import com.vinicius.twitter.dto.UserDTO;
+import com.vinicius.twitter.exceptions.UserNotFoundException;
 import com.vinicius.twitter.model.entity.Post;
 import com.vinicius.twitter.model.entity.User;
 import com.vinicius.twitter.model.repository.PostRepository;
@@ -30,9 +31,9 @@ public class PostServiceImpl implements PostService
     private UserService userService;
 
     @Override
-    public List<PostDTO> createTimelineForUser(UserDTO userDTO)
+    public List<PostDTO> createTimelineForUser(final String userEmail) throws UserNotFoundException
     {
-        List<UserDTO> usersDTO = userService.following(userDTO);
+        List<UserDTO> usersDTO = userService.following(userEmail);
         List<User> users = userConverter.toList(usersDTO);
         List<Post> posts = postRepository.findByUserInOrderByTimestamp(users);
 
@@ -47,7 +48,7 @@ public class PostServiceImpl implements PostService
     }
 
     @Override
-    public List<PostDTO> postByUser(UserDTO userDTO)
+    public List<PostDTO> postByUser(UserDTO userDTO) throws UserNotFoundException
     {
         User user = userConverter.to(userDTO);
         List<Post> posts = postRepository.findByUserInOrderByTimestamp(Arrays.asList(user));
